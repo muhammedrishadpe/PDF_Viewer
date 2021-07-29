@@ -37,7 +37,35 @@ const renderPage = num => {
         // Output current page
         document.querySelector('#page-num').textContent = num;
     });
+};
+    // Check for pages rendering 
+    const queueRenderPage = num => {
+        if(pageIsRendering) {
+            pageNumIsPending = num;
+        } else {
+            renderPage(num);
+        }
+    }
+
+ // show Prev Page
+ const showPrevPage = () => {
+     if(pageNum <= 1) {
+         return;
+     }
+     pageNum--;
+     queueRenderPage(pageNum);
+ }
+
+
+ // show Next Page
+ const showNextPage = () => {
+    if(pageNum >= pdfDoc.numPages) {
+        return;
+    }
+    pageNum++;
+    queueRenderPage(pageNum);
 }
+
 
 // Get Document
 pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
@@ -47,3 +75,7 @@ pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
 
     renderPage(pageNum)
 });
+
+// Button events 
+document.querySelector('#prev-page').addEventListener('click', showPrevPage)
+document.querySelector('#next-page').addEventListener('click', showNextPage)
